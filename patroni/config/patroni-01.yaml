@@ -1,0 +1,57 @@
+scope: patroni-cluster
+namespace: /patroni-cluster/
+name: patroni-1
+
+restapi:
+    listen: 10.10.0.20:8008
+    connect_address: 10.10.0.20:8008
+
+etcd:
+    host: etcd-01:2379
+
+bootstrap:
+    dcs:
+        ttl: 30
+        loop_wait: 10
+        retry_timeout: 10
+        maximum_lag_on_failover: 1048576
+        postgresql:
+            use_pg_rewind: true
+
+    initdb:
+    - encoding: UTF8
+    - data-checksums
+
+    pg_hba:
+    - host replication replicator 127.0.0.1/32 md5
+    - host replication replicator 10.10.0.20/0 md5
+    - host replication replicator 10.10.0.21/0 md5
+    - host all all 0.0.0.0/0 md5
+
+    users:
+        admin:
+            password: example
+            options:
+                - createrole
+                - createdb
+
+postgresql:
+    listen: 10.10.0.20:5432
+    connect_address: 10.10.0.20:5432
+    data_dir: /var/lib/patroni/data/
+    pgpass: /home/patroni/.pgpass
+    authentication:
+        replication:
+            username: replicator
+            password: example
+        superuser:
+            username: postgres
+            password: example
+    parameters:
+        unix_socket_directories: '.'
+
+tags:
+    nofailover: false
+    noloadbalance: false
+    clonefrom: false
+    nosync: false

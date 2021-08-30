@@ -1,0 +1,3 @@
+patroni
+psycopg2-binary
+python-etcd

@@ -1,0 +1,61 @@
+# https://github.com/etcd-io/etcd/blob/main/etcd.conf.yml.sample
+
+# Human-readable name for this member.
+name: '<etcd-01>'
+
+# Path to the data directory.
+data-dir: /var/lib/etcd/etcd-01/
+
+# Path to the dedicated wal directory.
+wal-dir: /var/lib/etcd/etcd-01/wal/
+
+# Number of committed transactions to trigger a snapshot to disk.
+snapshot-count: 10000
+
+# Time (in milliseconds) of a heartbeat interval.
+heartbeat-interval: 100
+
+# Time (in milliseconds) for an election to timeout.
+election-timeout: 1000
+
+# Raise alarms when backend size exceeds the given quota. 0 means use the
+# default quota.
+quota-backend-bytes: 0
+
+# Maximum number of snapshot files to retain (0 is unlimited).
+max-snapshots: 5
+
+# Maximum number of wal files to retain (0 is unlimited).
+max-wals: 5
+
+# List of comma separated URLs to listen on for peer traffic.
+listen-peer-urls: 'http://10.10.0.10:2380'
+
+# List of this member's peer URLs to advertise to the rest of the cluster.
+# The URLs needed to be a comma-separated list.
+initial-advertise-peer-urls: 'http://10.10.0.10:2380'
+
+# List of comma separated URLs to listen on for client traffic.
+listen-client-urls: 'http://10.10.0.10:2379, http://127.0.0.1:2379'
+
+# List of this member's client URLs to advertise to the public.
+# The URLs needed to be a comma-separated list.
+advertise-client-urls: 'http://10.10.0.10:2379'
+
+# Initial cluster configuration for bootstrapping.
+initial-cluster: '<etcd-01>=http://10.10.0.10:2380'
+
+# Initial cluster token for the etcd cluster during bootstrap.
+initial-cluster-token: 'etcd-cluster'
+
+# Initial cluster state ('new' or 'existing').
+initial-cluster-state: 'new'
+
+# Accept etcd V2 client requests
+enable-v2: true
+
+# Specify 'stdout' or 'stderr' to skip journald logging even when running under systemd.
+log-outputs: [stderr]
+
+auto-compaction-mode: periodic
+auto-compaction-retention: "1"
