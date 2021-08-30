@@ -8,8 +8,6 @@ LABEL description='etcd is a strongly consistent, distributed key-value store th
 RUN dnf update -y \
     && dnf install -y jq
 
-ARG GOOGLE_STORAGE_URL=etcd.storage.googleapis.com
-
 RUN LATEST_ETCD_VERSION=$(curl -s "https://storage.googleapis.com/storage/v1/b/etcd/o/?delimiter=/" | jq -r '.prefixes[-1]' | tr -d '/') \
     ETCD_GCP_STORAGE_URI="https://etcd.storage.googleapis.com/$LATEST_ETCD_VERSION/etcd-$LATEST_ETCD_VERSION-linux-amd64.tar.gz" \
     && mkdir -p /opt/etcd \
