@@ -10,7 +10,7 @@ RUN dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x
     && dnf update -y
 
 RUN dnf install -y \
-    gcc glibc-all-langpacks \
+    gcc glibc-all-langpacks langpacks-pt_BR \
     postgresql13-server postgresql13-contrib postgresql13-devel \
     python3 python3-devel python3-pip python3-psycopg2
 
