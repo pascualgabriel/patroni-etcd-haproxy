@@ -56,6 +56,7 @@ services:
     depends_on:
       - etcd-01
       - etcd-02
+      - etcd-03
 
   patroni-02:
     image: patroni-02:v1
@@ -72,6 +73,7 @@ services:
     depends_on:
       - etcd-01
       - etcd-02
+      - etcd-03
 
   haproxy:
     image: haproxy:v1
