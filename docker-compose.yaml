@@ -9,11 +9,37 @@ services:
       - ./etcd/config/etcd-01.yaml:/var/lib/etcd/etcd.yaml:ro
       - etcd-01-datadir:/var/lib/etcd/:rw
     ports:
-      - 2379:2379
-      - 2380:2380
+      - 2371:2379
+      - 2381:2380
     networks:
       patroni-cluster:
         ipv4_address: '10.10.0.10'
+  etcd-02:
+    image: etcd-02:v1
+    build:
+      context: etcd
+    volumes:
+      - ./etcd/config/etcd-02.yaml:/var/lib/etcd/etcd.yaml:ro
+      - etcd-02-datadir:/var/lib/etcd/:rw
+    ports:
+      - 2372:2379
+      - 2382:2380
+    networks:
+      patroni-cluster:
+        ipv4_address: '10.10.0.11'
+  etcd-03:
+      image: etcd-03:v1
+      build:
+        context: etcd
+      volumes:
+        - ./etcd/config/etcd-03.yaml:/var/lib/etcd/etcd.yaml:ro
+        - etcd-03-datadir:/var/lib/etcd/:rw
+      ports:
+        - 2373:2379
+        - 2383:2380
+      networks:
+        patroni-cluster:
+          ipv4_address: '10.10.0.12'
 
   patroni-01:
     image: patroni-01:v1
@@ -29,6 +55,7 @@ services:
         ipv4_address: '10.10.0.20'
     depends_on:
       - etcd-01
+      - etcd-02
 
   patroni-02:
     image: patroni-02:v1
@@ -44,6 +71,7 @@ services:
         ipv4_address: '10.10.0.21'
     depends_on:
       - etcd-01
+      - etcd-02
 
   haproxy:
     image: haproxy:v1
@@ -65,5 +93,7 @@ networks:
 
 volumes:
   etcd-01-datadir: {}
+  etcd-02-datadir: {}
+  etcd-03-datadir: {}
   patroni-01-datadir: {}
   patroni-02-datadir: {}

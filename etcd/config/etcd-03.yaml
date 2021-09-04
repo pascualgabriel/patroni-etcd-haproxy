@@ -1,13 +1,13 @@
 # https://github.com/etcd-io/etcd/blob/main/etcd.conf.yml.sample
 
 # Human-readable name for this member.
-name: 'etcd-01'
+name: 'etcd-03'
 
 # Path to the data directory.
-data-dir: /var/lib/etcd/etcd-01/
+data-dir: /var/lib/etcd/etcd-03/
 
 # Path to the dedicated wal directory.
-wal-dir: /var/lib/etcd/etcd-01/wal/
+wal-dir: /var/lib/etcd/etcd-03/wal/
 
 # Number of committed transactions to trigger a snapshot to disk.
 snapshot-count: 10000
@@ -29,18 +29,18 @@ max-snapshots: 5
 max-wals: 5
 
 # List of comma separated URLs to listen on for peer traffic.
-listen-peer-urls: 'http://10.10.0.10:2380'
+listen-peer-urls: 'http://10.10.0.12:2380'
 
 # List of this member's peer URLs to advertise to the rest of the cluster.
 # The URLs needed to be a comma-separated list.
-initial-advertise-peer-urls: 'http://10.10.0.10:2380'
+initial-advertise-peer-urls: 'http://10.10.0.12:2380'
 
 # List of comma separated URLs to listen on for client traffic.
-listen-client-urls: 'http://10.10.0.10:2379,http://127.0.0.1:2379'
+listen-client-urls: 'http://10.10.0.12:2379,http://127.0.0.1:2379'
 
 # List of this member's client URLs to advertise to the public.
 # The URLs needed to be a comma-separated list.
-advertise-client-urls: 'http://10.10.0.10:2379'
+advertise-client-urls: 'http://10.10.0.12:2379'
 
 # Initial cluster configuration for bootstrapping.
 initial-cluster: 'etcd-01=http://10.10.0.10:2380,etcd-02=http://10.10.0.11:2380,etcd-03=http://10.10.0.12:2380'
