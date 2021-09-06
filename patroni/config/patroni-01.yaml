@@ -47,6 +47,7 @@ postgresql:
         superuser:
             username: postgres
             password: example
+    custom_conf: /home/patroni/postgresql.conf
     parameters:
         unix_socket_directories: '.'
 

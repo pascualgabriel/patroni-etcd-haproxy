@@ -5,9 +5,10 @@ services:
     image: etcd-01:v1
     build:
       context: etcd
+    hostname: etcd-01
     volumes:
       - ./etcd/config/etcd-01.yaml:/var/lib/etcd/etcd.yaml:ro
-      - etcd-01-datadir:/var/lib/etcd/:rw
+      - etcd-01-datadir:/var/lib/etcd:rw
     ports:
       - 2371:2379
       - 2381:2380
@@ -18,9 +19,10 @@ services:
     image: etcd-02:v1
     build:
       context: etcd
+    hostname: etcd-02
     volumes:
       - ./etcd/config/etcd-02.yaml:/var/lib/etcd/etcd.yaml:ro
-      - etcd-02-datadir:/var/lib/etcd/:rw
+      - etcd-02-datadir:/var/lib/etcd:rw
     ports:
       - 2372:2379
       - 2382:2380
@@ -31,9 +33,10 @@ services:
       image: etcd-03:v1
       build:
         context: etcd
+      hostname: etcd-03
       volumes:
         - ./etcd/config/etcd-03.yaml:/var/lib/etcd/etcd.yaml:ro
-        - etcd-03-datadir:/var/lib/etcd/:rw
+        - etcd-03-datadir:/var/lib/etcd:rw
       ports:
         - 2373:2379
         - 2383:2380
@@ -45,9 +48,12 @@ services:
     image: patroni-01:v1
     build:
       context: patroni
+    hostname: patroni-01
     volumes:
       - ./patroni/config/patroni-01.yaml:/home/patroni/patroni.yaml:ro
-      - patroni-01-datadir:/var/lib/pgsql/13/data/:rw
+      - ./patroni/config/postgresql.conf:/home/patroni/postgresql.conf:ro
+      - patroni-01-datadir:/var/lib/patroni/data:rw
+      - patroni-01-logdir:/var/lib/patroni/log:rw
     ports:
       - 5432:5432
     networks:
@@ -62,9 +68,12 @@ services:
     image: patroni-02:v1
     build:
       context: patroni
+    hostname: patroni-02
     volumes:
       - ./patroni/config/patroni-02.yaml:/home/patroni/patroni.yaml:ro
-      - patroni-02-datadir:/var/lib/pgsql/13/data/:rw
+      - ./patroni/config/postgresql.conf:/home/patroni/postgresql.conf:ro
+      - patroni-02-datadir:/var/lib/patroni/data:rw
+      - patroni-02-logdir:/var/lib/patroni/log:rw
     ports:
       - 5433:5432
     networks:
@@ -79,12 +88,30 @@ services:
     image: haproxy:v1
     build:
       context: HAProxy
+    hostname: haproxy
     ports:
       - 5000:5000
       - 7000:7000
     networks:
       patroni-cluster:
         ipv4_address: '10.10.0.30'
+
+  pgbadger:
+    image: pgbadger:v1
+    build:
+      context: pgbadger
+    hostname: pgbadger
+    ports:
+      - 8081:80
+    networks:
+      - patroni-cluster
+    volumes:
+      - pgbadger-datadir:/var/lib/pgbadger/data:rw
+      - patroni-01-logdir:/var/lib/patroni-01/log:ro
+      - patroni-02-logdir:/var/lib/patroni-02/log:ro
+    depends_on:
+      - patroni-01
+      - patroni-02
 
 networks:
   patroni-cluster:
@@ -99,3 +126,6 @@ volumes:
   etcd-03-datadir: {}
   patroni-01-datadir: {}
   patroni-02-datadir: {}
+  patroni-01-logdir: {}
+  patroni-02-logdir: {}
+  pgbadger-datadir: {}

@@ -19,9 +19,10 @@ RUN ln -s /usr/pgsql-13/bin/* /usr/sbin/
 RUN groupadd patroni \
     && useradd --home-dir /home/patroni -g patroni patroni
 
-RUN mkdir -p /var/lib/patroni/data/ \
-    && chown patroni.patroni /var/lib/patroni/data/ \
-    && chmod 700 /var/lib/patroni/data/
+RUN mkdir -p /var/lib/patroni/data \
+    && mkdir -p /var/lib/patroni/log \
+    && chown -R patroni.patroni /var/lib/patroni \
+    && chmod -R 700 /var/lib/patroni
 
 USER patroni
 
