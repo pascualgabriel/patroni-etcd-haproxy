@@ -8,7 +8,8 @@ extract_report () {
     CSVs_LOG=$(find /var/lib/patroni-*/log/*.csv 2> /dev/null)
 
     if [ ! -z "$CSVs_LOG" ] ; then
-        pgbadger -f csv -o /var/www/html/index.html $CSVs_LOG
+        pgbadger -f csv -o /var/www/html/.tmp_index.html $CSVs_LOG
+        cat /var/www/html/.tmp_index.html > /var/www/html/index.html
     fi
 
 }
