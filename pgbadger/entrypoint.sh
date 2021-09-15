@@ -14,9 +14,15 @@ extract_report () {
 
 }
 
-nginx
+main () {
 
-while true ; do
-    extract_report
-    sleep "$INTERVAL"
-done
+    nginx
+
+    while true ; do
+        extract_report
+        sleep "$INTERVAL"
+    done
+
+}
+
+main
