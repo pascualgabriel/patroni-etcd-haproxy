@@ -2,4 +2,6 @@
 
 clear
 
-docker-compose down --volumes && docker-compose up --build
+# docker-compose down --volumes --remove-orphans && docker-compose up --build
+sudo vagrant up
+docker-compose up --build
