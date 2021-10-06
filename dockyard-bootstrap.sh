@@ -9,9 +9,3 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-
 sudo systemctl enable --now docker
 
 cd /opt/patroni-etcd-haproxy/ && sudo bash docker-build-up.sh
-
-# sudo bash /opt/containerized-patroni-etcd-haproxy/docker-build-up.sh
-
-# sudo firewall-cmd --zone=public --add-masquerade --permanent
-
-# sudo firewall-cmd --reload
