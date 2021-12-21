@@ -8,7 +8,7 @@ RUN dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x
 RUN dnf install -y \
     glibc-all-langpacks langpacks-pt_BR \
     pgbadger \
-    nginx
+    nginx httpd-tools
 
 RUN mkdir -p /var/www/html
 
