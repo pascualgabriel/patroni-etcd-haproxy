@@ -48,6 +48,8 @@ services:
     image: patroni-01:v1
     build:
       context: patroni
+      args:
+        - OS_PATRONI_USER_PASS=${OS_PATRONI_USER_PASS}
     hostname: patroni-01
     volumes:
       - ./patroni/config/patroni-01.yaml:/home/patroni/patroni.yaml:ro
@@ -64,11 +66,19 @@ services:
       - etcd-01
       - etcd-02
       - etcd-03
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "/var/lib/patroni/data/"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
 
   patroni-02:
     image: patroni-02:v1
     build:
       context: patroni
+      args:
+        - OS_PATRONI_USER_PASS=${OS_PATRONI_USER_PASS}
     hostname: patroni-02
     volumes:
       - ./patroni/config/patroni-02.yaml:/home/patroni/patroni.yaml:ro
@@ -85,6 +95,12 @@ services:
       - etcd-01
       - etcd-02
       - etcd-03
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "/var/lib/patroni/data/"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
 
   pgbadger:
     image: pgbadger:v1
@@ -99,6 +115,23 @@ services:
       - pgbadger-datadir:/var/lib/pgbadger/data:rw
       - patroni-01-logdir:/var/lib/patroni-01/log:ro
       - patroni-02-logdir:/var/lib/patroni-02/log:ro
+    depends_on:
+      - patroni-01
+      - patroni-02
+
+  barman:
+    image: barman:v1
+    build:
+      context: barman
+      args:
+        - OS_BARMAN_USER_PASS=${OS_BARMAN_USER_PASS}
+    environment:
+      - OS_PATRONI_USER_PASS=${OS_PATRONI_USER_PASS}
+    hostname: barman
+    networks:
+      - patroni-cluster
+    volumes:
+      - barman-datadir:/var/lib/barman/data:rw
     depends_on:
       - patroni-01
       - patroni-02
@@ -119,3 +152,4 @@ volumes:
   patroni-01-logdir: {}
   patroni-02-logdir: {}
   pgbadger-datadir: {}
+  barman-datadir: {}

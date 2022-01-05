@@ -34,6 +34,11 @@ bootstrap:
             options:
                 - createrole
                 - createdb
+        barman_backup:
+            password: example
+            options:
+                - superuser
+                - replication
 
 postgresql:
     listen: 10.10.0.20:5432
