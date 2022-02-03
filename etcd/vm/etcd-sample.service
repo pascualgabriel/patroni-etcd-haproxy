@@ -1,0 +1,17 @@
+# https://github.com/etcd-io/etcd/blob/main/contrib/systemd/etcd.service
+[Unit]
+Description=etcd key-value store
+Documentation=https://github.com/etcd-io/etcd
+After=network-online.target local-fs.target remote-fs.target time-sync.target
+Wants=network-online.target local-fs.target remote-fs.target time-sync.target
+
+[Service]
+User=etcd
+Type=notify
+ExecStart=etcd --config-file /etc/etcd/etcd.yaml
+Restart=always
+RestartSec=10s
+LimitNOFILE=40000
+
+[Install]
+WantedBy=multi-user.target

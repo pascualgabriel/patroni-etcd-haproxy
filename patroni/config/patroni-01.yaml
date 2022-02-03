@@ -1,13 +1,13 @@
 scope: patroni-cluster
 namespace: /patroni-cluster/
-name: patroni-1
+name: patroni-01
 
 restapi:
     listen: 10.10.0.20:8008
     connect_address: 10.10.0.20:8008
 
 etcd:
-    hosts: etcd-01:2379,etcd-02:2379,etcd-03:2379
+    hosts: 10.10.0.10:2379,10.10.0.11:2379,10.10.0.12:2379
 
 bootstrap:
     dcs:
@@ -52,7 +52,7 @@ postgresql:
         superuser:
             username: postgres
             password: example
-    custom_conf: /home/patroni/postgresql.conf
+    custom_conf: /etc/patroni/postgresql.conf
     parameters:
         unix_socket_directories: '.'
 
