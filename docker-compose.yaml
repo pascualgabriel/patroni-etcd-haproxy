@@ -48,8 +48,6 @@ services:
     image: patroni-01:v1
     build:
       context: patroni
-      args:
-        - OS_PATRONI_USER_PASS=${OS_PATRONI_USER_PASS}
     hostname: patroni-01
     volumes:
       - ./patroni/config/patroni-01.yaml:/home/patroni/patroni.yaml:ro
@@ -77,8 +75,6 @@ services:
     image: patroni-02:v1
     build:
       context: patroni
-      args:
-        - OS_PATRONI_USER_PASS=${OS_PATRONI_USER_PASS}
     hostname: patroni-02
     volumes:
       - ./patroni/config/patroni-02.yaml:/home/patroni/patroni.yaml:ro
@@ -123,10 +119,6 @@ services:
     image: barman:v1
     build:
       context: barman
-      args:
-        - OS_BARMAN_USER_PASS=${OS_BARMAN_USER_PASS}
-    environment:
-      - OS_PATRONI_USER_PASS=${OS_PATRONI_USER_PASS}
     hostname: barman
     networks:
       - patroni-cluster
