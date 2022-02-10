@@ -71,7 +71,7 @@ Vagrant.configure("2") do |config|
 
     dockyard.vm.synced_folder ".", "/opt/patroni-etcd-haproxy"
 
-    dockyard.vm.network "private_network", ip: "10.10.0.30"
+    dockyard.vm.network "private_network", ip: "10.10.0.4"
 
     dockyard.vm.provision :shell, path: "dockyard-bootstrap.sh"
 
@@ -98,9 +98,6 @@ Vagrant.configure("2") do |config|
 
     etcd_01.vm.network "private_network", ip: "10.10.0.10"
 
-    etcd_01.vm.network "forwarded_port", guest: 2379, host: 2371, auto_correct: true
-    etcd_01.vm.network "forwarded_port", guest: 2380, host: 2381, auto_correct: true
-
     etcd_01.vm.provision :shell,
       inline: "bash /opt/patroni-etcd-haproxy/etcd/vm/bootstrap.sh"
 
@@ -123,9 +120,6 @@ Vagrant.configure("2") do |config|
 
     etcd_02.vm.network "private_network", ip: "10.10.0.11"
 
-    etcd_02.vm.network "forwarded_port", guest: 2379, host: 2372, auto_correct: true
-    etcd_02.vm.network "forwarded_port", guest: 2380, host: 2382, auto_correct: true
-
     etcd_02.vm.provision :shell,
       inline: "bash /opt/patroni-etcd-haproxy/etcd/vm/bootstrap.sh"
 
@@ -147,9 +141,6 @@ Vagrant.configure("2") do |config|
     etcd_03.vm.synced_folder ".", "/opt/patroni-etcd-haproxy"
 
     etcd_03.vm.network "private_network", ip: "10.10.0.12"
-
-    etcd_03.vm.network "forwarded_port", guest: 2379, host: 2373, auto_correct: true
-    etcd_03.vm.network "forwarded_port", guest: 2380, host: 2383, auto_correct: true
 
     etcd_03.vm.provision :shell,
       inline: "bash /opt/patroni-etcd-haproxy/etcd/vm/bootstrap.sh"
@@ -177,9 +168,6 @@ Vagrant.configure("2") do |config|
 
     patroni_01.vm.network "private_network", ip: "10.10.0.20"
 
-    patroni_01.vm.network "forwarded_port", guest: 5432, host: 5432, auto_correct: true
-    patroni_01.vm.network "forwarded_port", guest: 8008, host: 8008, auto_correct: true
-
     patroni_01.vm.provision :shell,
       inline: "bash /opt/patroni-etcd-haproxy/patroni/vm/bootstrap.sh",
       env: {"OS_PATRONI_USER_PASS" => "example"}
@@ -203,12 +191,32 @@ Vagrant.configure("2") do |config|
 
     patroni_02.vm.network "private_network", ip: "10.10.0.21"
 
-    patroni_02.vm.network "forwarded_port", guest: 5433, host: 5432, auto_correct: true
-    patroni_02.vm.network "forwarded_port", guest: 8009, host: 8009, auto_correct: true
-
     patroni_02.vm.provision :shell,
       inline: "bash /opt/patroni-etcd-haproxy/patroni/vm/bootstrap.sh",
       env: {"OS_PATRONI_USER_PASS" => "example"}
+
+  end
+
+  config.vm.define "barman" do |barman|
+
+    barman.vm.box = "rockylinux/8"
+
+    barman.vm.box_version = "4.0.0"
+
+    barman.vm.provider "virtualbox" do |virtualbox|
+      virtualbox.cpus = 1
+      virtualbox.memory = "1024"
+    end
+
+    barman.vm.hostname = "barman"
+
+    barman.vm.synced_folder ".", "/opt/patroni-etcd-haproxy"
+
+    barman.vm.network "private_network", ip: "10.10.0.30"
+
+    barman.vm.provision :shell,
+      inline: "bash /opt/patroni-etcd-haproxy/barman/vm/bootstrap.sh",
+      env: {"OS_BARMAN_USER_PASS" => "example", "OS_PATRONI_USER_PASS" => "example"}
 
   end
 
