@@ -68,8 +68,8 @@ services:
       - etcd-03
     healthcheck:
       test: ["CMD", "pg_isready", "-h", "/var/lib/patroni/data/"]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 5s
       retries: 3
       start_period: 30s
 
@@ -97,8 +97,8 @@ services:
       - etcd-03
     healthcheck:
       test: ["CMD", "pg_isready", "-h", "/var/lib/patroni/data/"]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 5s
       retries: 3
       start_period: 30s
 
