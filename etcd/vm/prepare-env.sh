@@ -11,6 +11,12 @@ LATEST_ETCD_VERSION=$(curl -s "https://storage.googleapis.com/storage/v1/b/etcd/
     && cd /opt/etcd \
     && rm -rf Documentation *.md
 
+echo '10.10.0.10 etcd-01 etcd-01
+10.10.0.11 etcd-02 etcd-02
+10.10.0.12 etcd-03 etcd-03
+10.10.0.20 patroni-01 patroni-01
+10.10.0.21 patroni-02 patroni-02' >> /etc/hosts
+
 ln -s /opt/etcd/* /usr/sbin/
 
 mkdir -p /etc/etcd \
