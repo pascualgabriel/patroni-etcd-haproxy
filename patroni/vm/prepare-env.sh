@@ -16,7 +16,16 @@ groupadd patroni \
 
 sed -i -r 's/^#(.*Port 22.*)$/\1/' /etc/ssh/sshd_config \
     && sed -i -r 's/^#(.*ListenAddress 0.0.0.0.*)$/\1/' /etc/ssh/sshd_config \
+    && sed -i -r 's/^#(.*PasswordAuthentication yes.*)$/\1/' /etc/ssh/sshd_config \
+    && sed -i -r 's/^(.*PasswordAuthentication no.*)$/#\1/' /etc/ssh/sshd_config \
     && ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y
+
+echo '10.10.0.20 patroni-01 patroni-01
+10.10.0.21 patroni-02 patroni-02
+10.10.0.10 etcd-01 etcd-01
+10.10.0.11 etcd-02 etcd-02
+10.10.0.12 etcd-03 etcd-03
+10.10.0.30 barman barman' >> /etc/hosts
 
 ln -s /usr/pgsql-13/bin/* /usr/sbin/
 
@@ -32,6 +41,6 @@ echo 'softdog' > /etc/modules-load.d/softdog.conf
 
 modprobe softdog
 
-# chown patroni /dev/watchdog
-
 echo 'KERNEL=="watchdog", OWNER="patroni", GROUP="root", MODE="0600"' > /etc/udev/rules.d/60-watchdog.rules
+
+semanage permissive -a rsync_t
