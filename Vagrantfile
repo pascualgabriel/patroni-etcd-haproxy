@@ -55,29 +55,6 @@ Vagrant.configure("2") do |config|
   end
 
   #
-  # DOCKER
-  #
-
-  config.vm.define "dockyard" do |dockyard|
-
-    dockyard.vm.box = "rockylinux/8"
-
-    dockyard.vm.box_version = "4.0.0"
-
-    dockyard.vm.provider "virtualbox" do |virtualbox|
-      virtualbox.cpus = 1
-      virtualbox.memory = "4096"
-    end
-
-    dockyard.vm.synced_folder ".", "/opt/patroni-etcd-haproxy"
-
-    dockyard.vm.network "private_network", ip: "10.10.0.4"
-
-    dockyard.vm.provision :shell, path: "dockyard-bootstrap.sh"
-
-  end
-
-  #
   # ETCD
   #
 
