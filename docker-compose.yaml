@@ -50,8 +50,8 @@ services:
       context: patroni
     hostname: patroni-01
     volumes:
-      - ./patroni/config/patroni-01.yaml:/home/patroni/patroni.yaml:ro
-      - ./patroni/config/postgresql.conf:/home/patroni/postgresql.conf:ro
+      - ./patroni/config/patroni-01.yaml:/etc/patroni/patroni.yaml:ro
+      - ./patroni/config/postgresql.conf:/etc/patroni/postgresql.conf:ro
       - patroni-01-datadir:/var/lib/patroni/data:rw
       - patroni-01-logdir:/var/lib/patroni/log:rw
     ports:
@@ -77,8 +77,8 @@ services:
       context: patroni
     hostname: patroni-02
     volumes:
-      - ./patroni/config/patroni-02.yaml:/home/patroni/patroni.yaml:ro
-      - ./patroni/config/postgresql.conf:/home/patroni/postgresql.conf:ro
+      - ./patroni/config/patroni-02.yaml:/etc/patroni/patroni.yaml:ro
+      - ./patroni/config/postgresql.conf:/etc/patroni/postgresql.conf:ro
       - patroni-02-datadir:/var/lib/patroni/data:rw
       - patroni-02-logdir:/var/lib/patroni/log:rw
     ports:
@@ -111,6 +111,23 @@ services:
       - pgbadger-datadir:/var/lib/pgbadger/data:rw
       - patroni-01-logdir:/var/lib/patroni-01/log:ro
       - patroni-02-logdir:/var/lib/patroni-02/log:ro
+    depends_on:
+      - patroni-01
+      - patroni-02
+
+  haproxy:
+    image: haproxy:v1
+    build:
+      context: HAProxy
+    # ports:
+    #   - 8082:80
+    #   - 5410:5432
+    #   - 5411:5433
+    networks:
+      - patroni-cluster
+    deploy:
+      mode: replicated
+      replicas: 3
     depends_on:
       - patroni-01
       - patroni-02
