@@ -2,4 +2,4 @@
 
 clear
 
-docker-compose up --build -d
+docker-compose --compatibility up --build -d
