@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./patroni-cluster/bin/patroni /etc/patroni/patroni.yaml
+patroni /etc/patroni/patroni.yaml
