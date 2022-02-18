@@ -19,6 +19,13 @@ RUN groupadd patroni \
 
 RUN ln -s /usr/pgsql-13/bin/* /usr/sbin/
 
+RUN ln -s /home/patroni/patroni-cluster/bin/patroni \
+    /home/patroni/patroni-cluster/bin/patroni_aws \
+    /home/patroni/patroni-cluster/bin/patroni_raft_controller \
+    /home/patroni/patroni-cluster/bin/patroni_wale_restore \
+    /home/patroni/patroni-cluster/bin/patronictl \
+    /usr/sbin/
+
 RUN mkdir -p /var/lib/patroni/data \
     /var/lib/patroni/log \
     /etc/patroni \
