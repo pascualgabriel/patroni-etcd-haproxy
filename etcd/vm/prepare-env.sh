@@ -1,7 +1,6 @@
 #!/bin/bash
 
-dnf update -qy \
-    && dnf install -qy jq
+dnf install -y jq
 
 LATEST_ETCD_VERSION=$(curl -s "https://storage.googleapis.com/storage/v1/b/etcd/o/?delimiter=/" | jq -r '.prefixes[-1]' | tr -d '/') \
     ETCD_GCP_STORAGE_URI="https://etcd.storage.googleapis.com/$LATEST_ETCD_VERSION/etcd-$LATEST_ETCD_VERSION-linux-amd64.tar.gz" \
