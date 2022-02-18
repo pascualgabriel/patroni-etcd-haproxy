@@ -4,16 +4,14 @@ WORKDIR=$(dirname $0)
 
 cd "$WORKDIR"
 
-sudo su root -c "./prepare-env.sh"
+su root -c "./prepare-env.sh"
 
-sudo su patroni -c "./config-patroni.sh"
-
-ln -s /home/patroni/patroni-cluster/bin/patroni* /usr/sbin/
+su patroni -c "./config-patroni.sh"
 
 echo "patroni:$OS_PATRONI_USER_PASS" | chpasswd
 
-systemctl enable --now sshd
+ln -s /home/patroni/patroni-cluster/bin/patroni* /usr/sbin/
 
-systemctl enable patroni
+systemctl enable sshd && systemctl restart sshd
 
-init 6
+systemctl enable --now patroni
