@@ -14,6 +14,8 @@ cp /opt/patroni-etcd-haproxy/barman/config/barman.conf /etc/barman.conf
 
 cp /opt/patroni-etcd-haproxy/barman/config/patroni-01.conf /etc/barman.d/patroni-01.conf
 
+cp /opt/patroni-etcd-haproxy/barman/config/patroni-02.conf /etc/barman.d/patroni-02.conf
+
 config-ssh () {
 
     sshpass -p "$OS_PATRONI_USER_PASS" ssh-copy-id -i ~/.ssh/id_rsa.pub "$PATRONI_USER"@"$1" \
@@ -32,7 +34,7 @@ for server in ${SERVERs[@]} ; do
         exit 1
     fi
 
-    barman check "$server" 2
+    barman check "$server"
     barman switch-wal --archive "$server"
 
 done
