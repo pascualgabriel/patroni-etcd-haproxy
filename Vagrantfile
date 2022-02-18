@@ -4,7 +4,8 @@ Vagrant.configure("2") do |config|
   # GLOBAL
   #
 
-  config.disksize.size = "15GB"
+  # XXX> Before than run follow command, execute in shell: vagrant plugin install vagrant-disksize
+  # config.disksize.size = "15GB"
 
   #
   # HAPROXY
@@ -42,7 +43,7 @@ Vagrant.configure("2") do |config|
       virtualbox.cpus = 1
       virtualbox.memory = "1024"
     end
-    
+
     haproxy_02.vm.hostname = "haproxy-02"
 
     haproxy_02.vm.synced_folder ".", "/opt/patroni-etcd-haproxy"
