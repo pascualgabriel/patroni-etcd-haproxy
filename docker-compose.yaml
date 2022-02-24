@@ -138,9 +138,11 @@ services:
       context: barman
     hostname: barman
     networks:
-      - patroni-cluster
+      patroni-cluster:
+        ipv4_address: '10.10.0.30'
     volumes:
       - barman-datadir:/var/lib/barman/data:rw
+      - barman-logdir:/var/log/barman:rw
     depends_on:
       - patroni-01
       - patroni-02
@@ -162,3 +164,4 @@ volumes:
   patroni-02-logdir: {}
   pgbadger-datadir: {}
   barman-datadir: {}
+  barman-logdir: {}

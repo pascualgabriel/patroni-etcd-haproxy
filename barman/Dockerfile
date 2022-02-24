@@ -1,54 +1,58 @@
-FROM centos:7
+FROM rockylinux/rockylinux:8
 
-RUN yum install -y epel-release \
-    https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+RUN dnf install -y epel-release \
+    https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
+    && dnf -qy module disable postgresql
 
 RUN curl 'https://dl.2ndquadrant.com/default/release/get/13/rpm' | bash \
     && sed -i 's/\[pgdg-common\]/\[pgdg-common\]\nexclude=barman* python*-barman/' /etc/yum.repos.d/pgdg-redhat-all.repo
 
-RUN yum install -y \
-    openssh-clients openssh-server sshpass \
+RUN dnf install -y \
+    postgresql13 \
     python2-psycopg2 \
     barman barman-cli \
-    rsync
+    crontabs
 
-ARG OS_BARMAN_USER_PASS=${OS_BARMAN_USER_PASS}
+RUN ln -s /usr/pgsql-13/bin/pg_receivewal /usr/bin/pg_receivexlog
 
-RUN echo "barman:${OS_BARMAN_USER_PASS}" | chpasswd
+RUN ln -s /var/lib/barman/supervisor/bin/supervisord /usr/sbin/
 
-RUN sed -i -r 's/^#(.*Port 22.*)$/\1/' /etc/ssh/sshd_config \
-    && sed -i -r 's/^#(.*ListenAddress 0.0.0.0.*)$/\1/' /etc/ssh/sshd_config \
-    && ssh-keygen -A \
-    && mkdir -p /run/sshd \
-    && rm -rf /run/nologin \
-    && chown -R root.barman /etc/ssh \
-    && chmod -R g+r /etc/ssh
+RUN chmod u+s /usr/sbin/crond
+
+COPY --chown=barman:barman ./config/barman-cron-sample /etc/cron.d/barman
+
+RUN chmod 0644 /etc/cron.d/barman \
+    && crontab -u barman /etc/cron.d/barman
 
 RUN mkdir -p /var/lib/barman/data \
-    /var/lib/barman/data/INCOMING \
-    /var/lib/barman/data/BACKUPS \
+             /var/lib/barman/data/BACKUPS \
     && chown -R barman.barman /var/lib/barman/data
 
 RUN cp /etc/barman.conf /etc/barman.sample.conf \
     && chown -R barman.barman /etc/barman.d \
-    /etc/barman.sample.conf /etc/barman.conf
+                              /etc/barman.sample.conf \
+                              /etc/barman.conf
 
 USER barman
 
 WORKDIR /var/lib/barman
 
-RUN ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa -q -N "" \
-    && echo 'StrictHostKeyChecking no' >> ~/.ssh/config
+ENV PATH=$PATH:/usr/pgsql-13/bin/
 
-RUN echo "*:*:*:barman_backup:example" > ~/.pgpass \
-    && chmod 0600 ~/.pgpass
+RUN python3 -m venv supervisor \
+    && source ./supervisor/bin/activate \
+    && python3 -m pip install --upgrade pip \
+    && python3 -m pip install supervisor
 
+COPY --chown=barman:barman ./config/.pgpass-sample /var/lib/barman/.pgpass
 COPY --chown=barman:barman ./config/barman.conf /etc/barman.conf
-
-COPY --chown=barman:barman ./config/patroni-01.conf /etc/barman.d/patroni-01.conf
-
+COPY --chown=barman:barman ./config/haproxy-streaming.conf /etc/barman.d/haproxy-streaming.conf
+COPY --chown=barman:barman ./config/supervisord.conf /etc/supervisord.conf
+COPY --chown=barman:barman ./daily-backup-routine.sh /var/lib/barman/daily-backup-routine.sh
 COPY --chown=barman:barman ./bootstrap.sh .
-
 COPY --chown=barman:barman ./entrypoint.sh .
 
-ENTRYPOINT [ "bash", "entrypoint.sh" ]
+RUN chmod 0600 /var/lib/barman/.pgpass \
+    && chmod u+x /var/lib/barman/daily-backup-routine.sh
+
+ENTRYPOINT [ "bash", "./entrypoint.sh" ]

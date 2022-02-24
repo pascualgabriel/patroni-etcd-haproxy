@@ -1,42 +1,25 @@
 #!/bin/bash
 
-SERVERs=("patroni-01" "patroni-02")
-PATRONI_USER='patroni'
-OS_PATRONI_USER_PASS="$OS_PATRONI_USER_PASS" # Get global env
+PG_ISREADY=checking
 
-config-ssh () {
+while "$PG_ISREADY" ; do
 
-    sshpass -p "$OS_PATRONI_USER_PASS" ssh-copy-id -i ~/.ssh/id_rsa.pub "$PATRONI_USER"@"$1" \
-    && scp "$PATRONI_USER"@"$1":~/.ssh/id_rsa.pub /tmp/"$1"_id_rsa.pub \
-    && cat /tmp/"$1"_id_rsa.pub >> ~/.ssh/authorized_keys \
-    && rm -f /tmp/"$1"_id_rsa.pub
+    PG_USER='barman_backup_streaming'
+    PG_DB='postgres'
+    PG_HOST='haproxy'
 
-}
+    pg_isready -U "$PG_USER" -d "$PG_DB" -h "$PG_HOST"
 
-main () {
+    if [ "$?" -eq 0 ] ; then
+        unset PG_ISREADY
+    fi
 
-    BOOTSTRAPPED_DIR="$HOME/BOOTSTRAPPED"
+done
 
-    test -d "$BOOTSTRAPPED_DIR" && exit 0
+# barman check haproxy-streaming
 
-    for server in ${SERVERs[@]} ; do
+# barman switch-wal --archive haproxy-streaming
 
-        config-ssh "$server"
+STREAMING_DIR="$HOME/data/BACKUPS/haproxy-streaming/"
 
-        if [ "$?" -ne 0 ] ; then
-            echo "ERROR: Server Doesn't Exists!"
-            exit 1
-        fi
-
-    done
-
-    mkdir -p "$BOOTSTRAPPED_DIR"
-
-    echo -e "# BOOTSTRAP DONE
-    This entire directory is to
-    make sure the bootstrap routine has already been run
-" > "$BOOTSTRAPPED_DIR/README.md"
-
-}
-
-main
+test ! -d "$STREAMING_DIR" && mkdir -p "$STREAMING_DIR"
