@@ -2,4 +2,5 @@
 
 clear
 
-docker-compose up --build -d
+docker-compose build --parallel
+docker-compose --compatibility up -d

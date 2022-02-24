@@ -3,3 +3,6 @@ postgresql.conf
 
 # Vagrant
 .vagrant
+
+# Env
+.env

@@ -1,6 +1,6 @@
 scope: patroni-cluster
 namespace: /patroni-cluster/
-name: patroni-1
+name: patroni-01
 
 restapi:
     listen: 10.10.0.20:8008
@@ -17,16 +17,20 @@ bootstrap:
         maximum_lag_on_failover: 1048576
         postgresql:
             use_pg_rewind: true
+            parameters:
+                wal_keep_size: '8000MB'
+                max_connections: 200
 
     initdb:
-    - encoding: UTF8
-    - data-checksums
+        - encoding: UTF8
+        - data-checksums
 
     pg_hba:
-    - host replication replicator 127.0.0.1/32 md5
-    - host replication replicator 10.10.0.20/0 md5
-    - host replication replicator 10.10.0.21/0 md5
-    - host all all 0.0.0.0/0 md5
+        - host replication replicator 127.0.0.1/32 md5
+        - host replication replicator 10.10.0.20/0 md5
+        - host replication replicator 10.10.0.21/0 md5
+        - host replication barman_backup_streaming 10.10.0.30/0 md5
+        - host all all 0.0.0.0/0 md5
 
     users:
         admin:
@@ -34,6 +38,16 @@ bootstrap:
             options:
                 - createrole
                 - createdb
+        barman_backup:
+            password: example
+            options:
+                - superuser
+                - replication
+        barman_backup_streaming:
+            password: example
+            options:
+                - superuser
+                - replication
 
 postgresql:
     listen: 10.10.0.20:5432
@@ -47,7 +61,7 @@ postgresql:
         superuser:
             username: postgres
             password: example
-    custom_conf: /home/patroni/postgresql.conf
+    custom_conf: /etc/patroni/postgresql.conf
     parameters:
         unix_socket_directories: '.'
 
