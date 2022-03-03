@@ -5,14 +5,22 @@ LABEL maintainer.email='gabrielfpascual@gmail.com'
 LABEL purpose='Intended to install Patroni to orchestrate a high-availability PostgreSQL.'
 LABEL description='Patroni is a template for you to create your own customized, high-availability solution using Python and - for maximum accessibility - a distributed configuration store like ZooKeeper, etcd, Consul or Kubernetes. Database engineers, DBAs, DevOps engineers, and SREs who are looking to quickly deploy HA PostgreSQL in the datacenter-or anywhere else-will hopefully find it useful.'
 
-RUN dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
+RUN dnf install -qy \
+    epel-release \
+    dnf-plugins-core \
+    https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
+    && dnf config-manager --set-enabled powertools \
     && dnf -qy module disable postgresql \
-    && dnf update -y
+    && dnf check-update >> /dev/null || if [ "$?" = 100 ] ; then exit 0 ; fi
 
-RUN dnf install -y \
+RUN dnf install -qy \
     gcc glibc-all-langpacks langpacks-pt_BR \
     postgresql13-server postgresql13-contrib postgresql13-devel \
     python3 python3-devel python3-pip python3-psycopg2
+
+COPY ./dependencies/dnf-install-extra-packs.sh /usr/local/src/patroni-env-config/dnf-install-extra-packs.sh
+
+RUN bash /usr/local/src/patroni-env-config/dnf-install-extra-packs.sh
 
 RUN groupadd patroni \
     && useradd --home-dir /home/patroni -g patroni patroni

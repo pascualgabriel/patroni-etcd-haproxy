@@ -1,4 +1,4 @@
 * * * * * [ -x /usr/bin/barman ] && /usr/bin/barman -q cron
-0 * * * * [ -x /usr/bin/barman ] && bash /var/lib/barman/daily-backup-routine.sh >> /var/log/barman/backup.log
-30 18 * * * [ -x /usr/bin/barman ] && bash /var/lib/barman/daily-backup-routine.sh >> /var/log/barman/backup.log
-*/15 * * * * [ -x /usr/bin/barman ] && bash /var/lib/barman/daily-backup-routine.sh >> /var/log/barman/backup.log
+# 0 * * * * [ -x /usr/bin/barman ] && bash /var/lib/barman/daily-backup-routine.sh
+30 18 * * * [ -x /usr/bin/barman ] && bash /var/lib/barman/daily-backup-routine.sh
+# */15 * * * * [ -x /usr/bin/barman ] && bash /var/lib/barman/daily-backup-routine.sh
