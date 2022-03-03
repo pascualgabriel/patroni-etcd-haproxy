@@ -1,5 +1,10 @@
 FROM rockylinux/rockylinux:8
 
+LABEL maintainer='Gabriel Pascual'
+LABEL maintainer.email='gabrielfpascual@gmail.com'
+LABEL purpose='Intended to install barman to implement Point In Time Recovery backup.'
+LABEL description='Barman relies on PostgreSQL’s extremely robust and reliable Point In Time Recovery technology.'
+
 RUN dnf install -y epel-release \
     https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm \
     && dnf -qy module disable postgresql
