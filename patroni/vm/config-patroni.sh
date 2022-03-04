@@ -16,4 +16,4 @@ test ! "$HOSTNAME" && exit 1
 
 cp /opt/patroni-etcd-haproxy/patroni/config/$HOSTNAME.yaml /etc/patroni/patroni.yaml
 
-cp /opt/patroni-etcd-haproxy/patroni/config/postgresql.conf /etc/patroni/
+cp /opt/patroni-etcd-haproxy/patroni/config/postgresql.conf /etc/patroni/postgresql.appendage.conf

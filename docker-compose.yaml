@@ -51,7 +51,7 @@ services:
     hostname: patroni-01
     volumes:
       - ./patroni/config/patroni-01.yaml:/etc/patroni/patroni.yaml:ro
-      - ./patroni/config/postgresql.conf:/etc/patroni/postgresql.conf:ro
+      - ./patroni/config/postgresql.conf:/etc/patroni/postgresql.appendage.conf:ro
       - patroni-01-datadir:/var/lib/patroni/data:rw
       - patroni-01-logdir:/var/lib/patroni/log:rw
     ports:
@@ -78,7 +78,7 @@ services:
     hostname: patroni-02
     volumes:
       - ./patroni/config/patroni-02.yaml:/etc/patroni/patroni.yaml:ro
-      - ./patroni/config/postgresql.conf:/etc/patroni/postgresql.conf:ro
+      - ./patroni/config/postgresql.conf:/etc/patroni/postgresql.appendage.conf:ro
       - patroni-02-datadir:/var/lib/patroni/data:rw
       - patroni-02-logdir:/var/lib/patroni/log:rw
     ports:

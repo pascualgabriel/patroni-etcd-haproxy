@@ -61,7 +61,7 @@ postgresql:
         superuser:
             username: postgres
             password: example
-    custom_conf: /etc/patroni/postgresql.conf
+    custom_conf: /etc/patroni/postgresql.appendage.conf
     parameters:
         unix_socket_directories: '.'
 
