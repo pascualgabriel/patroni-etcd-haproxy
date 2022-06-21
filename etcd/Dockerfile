@@ -3,8 +3,11 @@ FROM rockylinux/rockylinux:8 AS etcd_downloader
 RUN dnf update -y \
     && dnf install -y jq
 
+ARG ETCD_VERSION='v3.5.2'
+
 RUN LATEST_ETCD_VERSION=$(curl -s "https://storage.googleapis.com/storage/v1/b/etcd/o/?delimiter=/" | jq -r '.prefixes[-1]' | tr -d '/') \
-    ETCD_GCP_STORAGE_URI="https://etcd.storage.googleapis.com/$LATEST_ETCD_VERSION/etcd-$LATEST_ETCD_VERSION-linux-amd64.tar.gz" \
+    ETCD_VERSION=${ETCD_VERSION:-$LATEST_ETCD_VERSION} \
+    ETCD_GCP_STORAGE_URI="https://etcd.storage.googleapis.com/$ETCD_VERSION/etcd-$ETCD_VERSION-linux-amd64.tar.gz" \
     && mkdir -p /opt/etcd \
     && curl -s "$ETCD_GCP_STORAGE_URI" \
     | tar -xzvC /opt/etcd --strip-components 1 \
