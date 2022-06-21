@@ -119,15 +119,15 @@ services:
     image: haproxy:v1
     build:
       context: HAProxy
-    # ports:
-    #   - 8082:80
-    #   - 5410:5432
-    #   - 5411:5433
+    ports:
+      - 8082:80
+      - 5410:5432
+      - 5411:5433
     networks:
       - patroni-cluster
-    deploy:
-      mode: replicated
-      replicas: 3
+    # deploy:
+    #   mode: replicated
+    #   replicas: 3
     depends_on:
       - patroni-01
       - patroni-02
