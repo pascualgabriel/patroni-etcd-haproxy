@@ -1,7 +1,7 @@
 FROM rockylinux/rockylinux:8 AS etcd_downloader
 
 RUN dnf update -y \
-    && dnf install -y jq
+    && dnf install -y jq gzip
 
 ARG ETCD_VERSION='v3.5.2'
 
